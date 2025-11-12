@@ -7,18 +7,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: npx markdown-cli *.md
-  sonarcloud:
-    name: SonarCloud Analyze
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONARCLOUDTOKEN }}
   Build:
     runs-on: ubuntu-latest
     container: gradle:6-jdk11
@@ -34,6 +22,20 @@ jobs:
           name: code
           path: .
           include-hidden-files: true
+  sonarcloud:
+    name: SonarCloud Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download code
+        uses: actions/download-artifact@v4
+        with:
+          name: code
+          path: .
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONARCLOUDTOKEN }}
   Linting:
     runs-on: ubuntu-latest
     needs: [Build]
