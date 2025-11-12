@@ -62,6 +62,7 @@ jobs:
         run: snyk test --all-sub-projects --configuration-matching='^(?!test).*' --severity-threshold=high
         working-directory: code     # ✅ валидно само за run:
         env:
+          SNYK_TOKEN: ${{ secrets.SNYKTOKEN }}
 
 
   Linting:
