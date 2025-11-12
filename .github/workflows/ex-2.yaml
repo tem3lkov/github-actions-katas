@@ -45,7 +45,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: code
-          path: .
+          path: code        # 👈 гарантира, че ./code ще съществува
+  
+      - name: Preflight (see what we got)
+        run: |
+          pwd
+          ls -la
+          echo "---- ./code ----"
+          ls -la code
   
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -60,7 +67,7 @@ jobs:
   
       - name: Snyk OSS (Gradle)
         run: snyk test --all-sub-projects --configuration-matching='^(?!test).*' --severity-threshold=high
-        working-directory: code     # ✅ валидно само за run:
+        working-directory: code      # 👈 вече съществува
         env:
           SNYK_TOKEN: ${{ secrets.SNYKTOKEN }}
 
