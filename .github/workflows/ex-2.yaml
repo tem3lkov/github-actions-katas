@@ -23,6 +23,7 @@ jobs:
           path: .
           include-hidden-files: true
   sonarcloud:
+    needs: [Build]
     name: SonarCloud Analyze
     runs-on: ubuntu-latest
     steps:
