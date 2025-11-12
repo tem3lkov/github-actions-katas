@@ -45,22 +45,23 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: code
-          path: .   # ще извади в ./code/ ...
+          path: .
+  
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
-      - name: Snyk Open Source (Gradle)
-        uses: snyk/actions/gradle@master   # ✅ вместо deprecated gradle-jdk11
+  
+      - name: Install Snyk CLI
+        uses: snyk/actions/setup@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYKTOKEN }}
-        with:
-          args: >
-            --all-sub-projects
-            --configuration-matching='^(?!test).*'
-            --severity-threshold=high
-        working-directory: code            # 👈 важно: тук са build.gradle файловете
+  
+      - name: Snyk OSS (Gradle)
+        run: snyk test --all-sub-projects --configuration-matching='^(?!test).*' --severity-threshold=high
+        working-directory: code     # ✅ валидно само за run:
+        env:
 
 
   Linting:
