@@ -47,7 +47,7 @@ jobs:
           name: code
           path: .
       - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
+        uses: snyk/actions/grade@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYKTOKEN }}
   Linting:
