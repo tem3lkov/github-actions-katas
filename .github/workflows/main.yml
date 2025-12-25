@@ -101,15 +101,20 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: ${{ env.github_username }}
           password: ${{ secrets.GITHUB_TOKEN }}
-  
+
+      - name: Set image ref (same format as push script)
+        run: |
+          echo "IMAGE_REF=ghcr.io/${github_username}/micronaut-app:1.0-${GIT_COMMIT::8}" >> $GITHUB_ENV
+          echo "Will scan $IMAGE_REF"
+
       - name: Scan pushed image
         uses: aquasecurity/trivy-action@0.33.1
         with:
-          image-ref: ghcr.io/${{ github.repository_owner }}/micronaut-app:${{ github.sha }}
+          image-ref: ${{ env.IMAGE_REF }}
           format: table
           exit-code: '1'
           ignore-unfixed: true
-          vuln-type: os,library
-          severity: CRITICAL,HIGH
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
