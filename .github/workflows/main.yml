@@ -89,3 +89,27 @@ jobs:
           path: .
       - name: Executes performance test
         run: bash ci/performance-test.sh
+
+  Security-scan:
+    runs-on: ubuntu-latest
+    needs: [Docker-image]
+    permissions:
+      packages: read
+      contents: read
+    steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+  
+      - name: Scan pushed image
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: ghcr.io/${{ github.repository_owner }}/my-app:${{ github.sha }}
+          format: table
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: os,library
+          severity: CRITICAL,HIGH
