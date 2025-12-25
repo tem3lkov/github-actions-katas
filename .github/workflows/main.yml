@@ -107,7 +107,7 @@ jobs:
       - name: Scan pushed image
         uses: aquasecurity/trivy-action@0.33.1
         with:
-          image-ref: ghcr.io/${{ github.repository_owner }}/my-app:${{ github.sha }}
+          image-ref: ghcr.io/${{ github.repository_owner }}/micronaut-app:${{ github.sha }}
           format: table
           exit-code: '1'
           ignore-unfixed: true
